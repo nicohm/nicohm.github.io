@@ -1,0 +1,795 @@
+I"%<h1 id="basic-ggplot2">Basic Ggplot2</h1>
+
+<p>[TOC]</p>
+
+<h2 id="first-plot">First plot</h2>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Load the ggplot2 package</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="s1">'ggplot2'</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Explore the mtcars data frame with str()</span><span class="w">
+</span><span class="n">str</span><span class="p">(</span><span class="n">mtcars</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Execute the following command</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">cyl</span><span class="p">,</span><span class="w"> </span><span class="n">mpg</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Modificar una variable que sabemos que es categorica pero aparece como numerica</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Load the ggplot2 package</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Change the command below so that cyl is treated as factor</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">factor</span><span class="p">(</span><span class="n">cyl</span><span class="p">),</span><span class="w"> </span><span class="n">mpg</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="aesthetics">Aesthetics</h2>
+
+<h3 id="color">Color</h3>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Edit to add a color aesthetic mapped to disp</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">wt</span><span class="p">,</span><span class="w"> </span><span class="n">mpg</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">disp</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Shape solo acepta variables categoricas</p>
+
+<h2 id="layers">Layers</h2>
+
+<h2 id="geometries">Geometries</h2>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Add geom_smooth() with +</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">diamonds</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">carat</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_smooth</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="changing-one-geom-or-every-geom">Changing one geom or every geom</h3>
+
+<p>If you have multiple geoms, then mapping an aesthetic to data variable inside the call to <code class="language-plaintext highlighter-rouge">ggplot()</code> will change <em>all</em> the geoms. It is also possible to make changes to <em>individual</em> geoms by passing arguments to the <code class="language-plaintext highlighter-rouge">geom_*()</code> functions.</p>
+
+<p><code class="language-plaintext highlighter-rouge">geom_point()</code> has an <code class="language-plaintext highlighter-rouge">alpha</code> argument that controls the opacity of the points. A value of <code class="language-plaintext highlighter-rouge">1</code> (the default) means that the points are totally opaque; a value of <code class="language-plaintext highlighter-rouge">0</code> means the points are totally transparent (and therefore invisible). Values in between specify transparency.</p>
+
+<h3 id="saving-plots-as-variables">Saving plots as variables</h3>
+
+<p>Plots can be saved as variables, which can be added two later on using the <code class="language-plaintext highlighter-rouge">+</code> operator. This is really useful if you want to make multiple related plots from a common base.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Draw a ggplot</span><span class="w">
+</span><span class="n">plt_price_vs_carat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="w">
+  </span><span class="c1"># Use the diamonds dataset</span><span class="w">
+  </span><span class="n">diamonds</span><span class="p">,</span><span class="w">
+  </span><span class="c1"># For the aesthetics, map x to carat and y to price</span><span class="w">
+  </span><span class="n">aes</span><span class="p">(</span><span class="n">carat</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Add a point layer to plt_price_vs_carat</span><span class="w">
+</span><span class="n">plt_price_vs_carat</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_point</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># From previous step</span><span class="w">
+</span><span class="n">plt_price_vs_carat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">diamonds</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">carat</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># Edit this to make points 20% opaque: plt_price_vs_carat_transparent</span><span class="w">
+</span><span class="n">plt_price_vs_carat_transparent</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plt_price_vs_carat</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># See the plot</span><span class="w">
+</span><span class="n">plt_price_vs_carat_transparent</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># From previous step</span><span class="w">
+</span><span class="n">plt_price_vs_carat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">diamonds</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">carat</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># Edit this to map color to clarity,</span><span class="w">
+</span><span class="c1"># Assign the updated plot to a new object</span><span class="w">
+</span><span class="n">plt_price_vs_carat_by_clarity</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plt_price_vs_carat</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clarity</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># See the plot</span><span class="w">
+</span><span class="n">plt_price_vs_carat_by_clarity</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="all-about-aesthetics-color-shape-and-size">All about aesthetics: color, shape and size</h3>
+
+<p>In the video you saw 9 visible aesthetics. Let’s apply them to a categorical variable — the cylinders in <code class="language-plaintext highlighter-rouge">mtcars</code>, <code class="language-plaintext highlighter-rouge">cyl</code>.</p>
+
+<p>These are the aesthetics you can consider within <a href="http://www.rdocumentation.org/packages/ggplot2/functions/aes"><code class="language-plaintext highlighter-rouge">aes()</code></a> in this chapter: <code class="language-plaintext highlighter-rouge">x</code>, <code class="language-plaintext highlighter-rouge">y</code>, <code class="language-plaintext highlighter-rouge">color</code>, <code class="language-plaintext highlighter-rouge">fill</code>, <code class="language-plaintext highlighter-rouge">size</code>, <code class="language-plaintext highlighter-rouge">alpha</code>, <code class="language-plaintext highlighter-rouge">labels</code> and <code class="language-plaintext highlighter-rouge">shape</code>.</p>
+
+<p>One common convention is that you don’t name the <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> arguments to <code class="language-plaintext highlighter-rouge">aes()</code>, since they almost always come first, but you do name other arguments.</p>
+
+<p>In the following exercise the <code class="language-plaintext highlighter-rouge">fcyl</code> column is categorical. It is <code class="language-plaintext highlighter-rouge">cyl</code> transformed into a <code class="language-plaintext highlighter-rouge">factor</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(wt, mpg, color = fcyl)) +
+  # Set the shape and size of the points
+  geom_point(shape = 1, size = 4)
+</code></pre></div></div>
+
+<h3 id="all-about-aesthetics-color-vs-fill">All about aesthetics: color vs. fill</h3>
+
+<p>Typically, the <code class="language-plaintext highlighter-rouge">color</code> aesthetic changes the <em>outline</em> of a geom and the <code class="language-plaintext highlighter-rouge">fill</code> aesthetic changes the <em>inside</em>. <code class="language-plaintext highlighter-rouge">geom_point()</code> is an exception: you use <code class="language-plaintext highlighter-rouge">color</code> (not <code class="language-plaintext highlighter-rouge">fill</code>) for the point color. However, some shapes have special behavior.</p>
+
+<p>The default <code class="language-plaintext highlighter-rouge">geom_point()</code> uses <code class="language-plaintext highlighter-rouge">shape = 19</code>: a solid circle. An alternative is <code class="language-plaintext highlighter-rouge">shape = 21</code>: a circle that allow you to use <em>both</em> <code class="language-plaintext highlighter-rouge">fill</code> for the inside <em>and</em> <code class="language-plaintext highlighter-rouge">color</code> for the outline. This is lets you to map two aesthetics to each point.</p>
+
+<p>All shape values are described on the <a href="https://www.rdocumentation.org/packages/graphics/topics/points"><code class="language-plaintext highlighter-rouge">points()</code></a> help page.</p>
+
+<p><code class="language-plaintext highlighter-rouge">fcyl</code> and <code class="language-plaintext highlighter-rouge">fam</code> are the <code class="language-plaintext highlighter-rouge">cyl</code> and <code class="language-plaintext highlighter-rouge">am</code> columns converted to factors, respectively.</p>
+
+<h3 id="comparing-aesthetics">Comparing aesthetics</h3>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Base layer</span><span class="w">
+</span><span class="n">plt_mpg_vs_wt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">wt</span><span class="p">,</span><span class="w"> </span><span class="n">mpg</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># Map fcyl to shape, not alpha</span><span class="w">
+</span><span class="n">plt_mpg_vs_wt</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fcyl</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Base layer</span><span class="w">
+</span><span class="n">plt_mpg_vs_wt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">wt</span><span class="p">,</span><span class="w"> </span><span class="n">mpg</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># Use text layer and map fcyl to label</span><span class="w">
+</span><span class="n">plt_mpg_vs_wt</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fcyl</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Which aesthetics are only applicable to categorical data?</p>
+
+<ul>
+  <li>label &amp; shape</li>
+</ul>
+
+<h3 id="all-about-attributes-color-shape-size-and-alpha">All about attributes: color, shape, size and alpha</h3>
+
+<p>This time you’ll use these arguments to set <em>attributes</em> of the plot, not map variables onto <em>aesthetics</em>.</p>
+
+<p>You can specify colors in R using <strong>hex codes</strong>: a hash followed by two hexadecimal numbers each for red, green, and blue (<code class="language-plaintext highlighter-rouge">"#RRGGBB"</code>). Hexadecimal is base-16 counting. You have 0 to 9, and A representing 10 up to F representing 15. Pairs of hexadecimal numbers give you a range from 0 to 255. <code class="language-plaintext highlighter-rouge">"#000000"</code> is “black” (no color), <code class="language-plaintext highlighter-rouge">"#FFFFFF"</code> means “white”, and `“#00FFFF” is cyan (mixed green and blue).</p>
+
+<p>A hexadecimal color variable, <code class="language-plaintext highlighter-rouge">my_blue</code> has been defined for you.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># A hexadecimal color</span><span class="w">
+</span><span class="n">my_blue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"#4ABEFF"</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">wt</span><span class="p">,</span><span class="w"> </span><span class="n">mpg</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Set the point color and alpha</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_blue</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># A hexadecimal color</span><span class="w">
+</span><span class="n">my_blue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"#4ABEFF"</span><span class="w">
+
+</span><span class="c1"># Change the color mapping to a fill mapping</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">wt</span><span class="p">,</span><span class="w"> </span><span class="n">mpg</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fcyl</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Set point size and shape</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_blue</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="all-about-attributes-conflicts-with-aesthetics">All about attributes: conflicts with aesthetics</h3>
+
+<p>In the videos you saw that you can use all the aesthetics as attributes. Let’s see how this works with the aesthetics you used in the previous exercises: <code class="language-plaintext highlighter-rouge">x</code>, <code class="language-plaintext highlighter-rouge">y</code>, <code class="language-plaintext highlighter-rouge">color</code>, <code class="language-plaintext highlighter-rouge">fill</code>, <code class="language-plaintext highlighter-rouge">size</code>, <code class="language-plaintext highlighter-rouge">alpha</code>, <code class="language-plaintext highlighter-rouge">label</code> and <code class="language-plaintext highlighter-rouge">shape</code>.</p>
+
+<p>In this exercise you will set all kinds of attributes of the points!</p>
+
+<p>You will continue to work with <code class="language-plaintext highlighter-rouge">mtcars</code>.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">wt</span><span class="p">,</span><span class="w"> </span><span class="n">mpg</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fcyl</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Add text layer with label rownames(mtcars) and color red</span><span class="w">
+  </span><span class="n">geom_text</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">mtcars</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"red"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="updating-aesthetic-labels">Updating aesthetic labels</h3>
+
+<p>In this exercise, you’ll modify some aesthetics to make a bar plot of the number of cylinders for cars with different types of transmission.</p>
+
+<p>You’ll also make use of some functions for improving the appearance of the plot.</p>
+
+<ul>
+  <li><a href="https://www.rdocumentation.org/packages/ggplot2/topics/labs"><code class="language-plaintext highlighter-rouge">labs()</code></a> to set the x- and y-axis labels. It takes strings for each argument.</li>
+  <li><a href="https://www.rdocumentation.org/packages/ggplot2/topics/scale_manual"><code class="language-plaintext highlighter-rouge">scale_color_manual()</code></a> defines properties of the color scale (i.e. axis). The first argument sets the legend title. <code class="language-plaintext highlighter-rouge">values</code> is a named vector of colors to use.</li>
+</ul>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">fcyl</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fam</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Set the axis labels</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Number of Cylinders"</span><span class="p">,</span><span class="w">
+       </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Count"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">palette</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">automatic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#377EB8"</span><span class="p">,</span><span class="w"> </span><span class="n">manual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#E41A1C"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">fcyl</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fam</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Number of Cylinders"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Count"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Set the fill color scale</span><span class="w">
+  </span><span class="n">scale_fill_manual</span><span class="p">(</span><span class="s2">"Transmission"</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">palette</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">palette</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">automatic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#377EB8"</span><span class="p">,</span><span class="w"> </span><span class="n">manual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#E41A1C"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Set the position</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">fcyl</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fam</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dodge"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Number of Cylinders"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Count"</span><span class="p">)</span><span class="w">
+  </span><span class="n">scale_fill_manual</span><span class="p">(</span><span class="s2">"Transmission"</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">palette</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="setting-a-dummy-aesthetic">Setting a dummy aesthetic</h3>
+
+<p>In the last chapter you saw that all the visible aesthetics can serve as attributes and aesthetics, but I very conveniently left out x and y. That’s because although you can make univariate plots (such as histograms, which you’ll get to in the next chapter), a y-axis will always be provided, even if you didn’t ask for it.</p>
+
+<p>You can make univariate plots in <code class="language-plaintext highlighter-rouge">ggplot2</code>, but you will need to add a fake y axis by mapping <code class="language-plaintext highlighter-rouge">y</code> to zero.</p>
+
+<p>When using setting y-axis limits, you can specify the limits as separate arguments, or as a single numeric vector. That is, <code class="language-plaintext highlighter-rouge">ylim(lo, hi)</code> or <code class="language-plaintext highlighter-rouge">ylim(c(lo, hi))</code>.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">mpg</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_jitter</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Set the y-axis limits</span><span class="w">
+  </span><span class="n">ylim</span><span class="p">(</span><span class="m">-2</span><span class="p">,</span><span class="m">2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="appropriate-mappings">Appropriate mappings</h3>
+
+<p>Incorrect aesthetic mapping causes confusion or misleads the audience.</p>
+
+<p>Typically, the <strong>dependent</strong> variable is mapped onto the the <strong>y</strong>-axis and the <strong>independent</strong> variable is mapped onto the <strong>x</strong>-axis.</p>
+
+<p>In the <code class="language-plaintext highlighter-rouge">ToothGrowth</code> data set, we have three variables:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Variable</th>
+      <th style="text-align: left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">len</code></td>
+      <td style="text-align: left">Tooth length</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">supp</code></td>
+      <td style="text-align: left">Supplement type (VC or OJ)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dose</code></td>
+      <td style="text-align: left">Dose in milligrams/day</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>From the six possible ways to map three variables, one solution is shown in the viewer. Which of the remaining five would actually be a better solution?</p>
+
+<h2 id="scatter-plots">Scatter plots</h2>
+
+<h3 id="overplotting-1-large-datasets">Overplotting 1: large datasets</h3>
+
+<p>Scatter plots (using <code class="language-plaintext highlighter-rouge">geom_point()</code>) are intuitive, easily understood, and very common, but we must <em>always</em> consider <strong>overplotting</strong>, particularly in the following four situations:</p>
+
+<ol>
+  <li>Large datasets</li>
+  <li>Aligned values on a single axis</li>
+  <li>Low-precision data</li>
+  <li>Integer data</li>
+</ol>
+
+<p>Typically, <em>alpha</em> blending (i.e. adding transparency) is recommended when using solid shapes. Alternatively, you can use opaque, hollow shapes.</p>
+
+<p>Small points are suitable for large datasets with regions of high density (lots of overlapping).</p>
+
+<p>Let’s use the <code class="language-plaintext highlighter-rouge">diamonds</code> dataset to practice dealing with the large dataset case.</p>
+
+<h3 id="overplotting-2-aligned-values">Overplotting 2: Aligned values</h3>
+
+<p>Let’s take a look at another case where we should be aware of overplotting: Aligning values on a single axis.</p>
+
+<p>This occurs when one axis is continuous and the other is categorical, which can be overcome with some form of jittering.</p>
+
+<p>In the <code class="language-plaintext highlighter-rouge">mtcars</code> data set, <code class="language-plaintext highlighter-rouge">fam</code> and <code class="language-plaintext highlighter-rouge">fcyl</code> are categorical variants of <code class="language-plaintext highlighter-rouge">cyl</code> and <code class="language-plaintext highlighter-rouge">am</code></p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Plot base</span><span class="w">
+</span><span class="n">plt_mpg_vs_fcyl_by_fam</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">factor</span><span class="p">(</span><span class="n">cyl</span><span class="p">),</span><span class="w"> </span><span class="n">mpg</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factor</span><span class="p">(</span><span class="n">am</span><span class="p">)))</span><span class="w">
+
+</span><span class="c1"># Default points are shown for comparison</span><span class="w">
+</span><span class="n">x11</span><span class="p">()</span><span class="w">
+</span><span class="n">plt_mpg_vs_fcyl_by_fam</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_point</span><span class="p">()</span><span class="w">
+
+</span><span class="c1"># Alter the point positions by jittering, width 0.3</span><span class="w">
+</span><span class="n">plt_mpg_vs_fcyl_by_fam</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_point</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.3</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="overplotting-3-low-precision-data">Overplotting 3: Low-precision data</h3>
+
+<p>You already saw how to deal with overplotting when using <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_point"><code class="language-plaintext highlighter-rouge">geom_point()</code></a> in two cases:</p>
+
+<ol>
+  <li>Large datasets</li>
+  <li>Aligned values on a single axis</li>
+</ol>
+
+<p>We used <code class="language-plaintext highlighter-rouge">position = 'jitter'</code> inside <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_point"><code class="language-plaintext highlighter-rouge">geom_point()</code></a> or <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_jitter"><code class="language-plaintext highlighter-rouge">geom_jitter()</code></a>.</p>
+
+<p>Let’s take a look at another case:</p>
+
+<ol>
+  <li>Low-precision data</li>
+</ol>
+
+<p>This results from low-resolution measurements like in the iris dataset, which is measured to 1mm precision (see viewer). It’s similar to case 2, but in this case we can jitter on both the x and y axis.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">Sepal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">Sepal.Width</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Swap for jitter layer with width 0.1</span><span class="w">
+  </span><span class="n">geom_jitter</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Diferent approach</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">Sepal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">Sepal.Width</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Set the position to jitter</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"jitter"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>EYE: Jitter points to avoid overplotting</strong></p>
+
+<p><code class="language-plaintext highlighter-rouge">position_jitter(width = NULL, height = NULL, seed = NA)</code></p>
+
+<h3 id="overplotting-4-integer-data">Overplotting 4: Integer data</h3>
+
+<p>Let’s take a look at the last case of dealing with overplotting:</p>
+
+<ol>
+  <li>Integer data</li>
+</ol>
+
+<p>This can be type <code class="language-plaintext highlighter-rouge">integer</code> (i.e. 1 ,2, 3…) or categorical (i.e. class <code class="language-plaintext highlighter-rouge">factor</code>) variables. <code class="language-plaintext highlighter-rouge">factor</code> is just a special class of type <code class="language-plaintext highlighter-rouge">integer</code>.</p>
+
+<p>You’ll typically have a small, defined number of intersections between two variables, which is similar to case 3, but you may miss it if you don’t realize that integer and factor data are the same as low precision data.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">Vocab</code> dataset provided contains the years of education and vocabulary test scores from respondents to US General Social Surveys from 1972-2004.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">Vocab</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">education</span><span class="p">,</span><span class="w"> </span><span class="n">vocabulary</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Change to a jitter layer</span><span class="w">
+  </span><span class="n">geom_jitter</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Notar la diferencia cuando se usa <code class="language-plaintext highlighter-rouge">geom_point()</code></p>
+
+<h2 id="histograms">Histograms</h2>
+
+<h3 id="drawing-histograms">Drawing histograms</h3>
+
+<p>Recall that histograms cut up a continuous variable into discrete bins and, by default, maps the internally calculated <code class="language-plaintext highlighter-rouge">count</code> variable (the number of observations in each bin) onto the y aesthetic. An internal variable called <code class="language-plaintext highlighter-rouge">density</code> can be accessed by using the <code class="language-plaintext highlighter-rouge">..</code> notation, i.e. <code class="language-plaintext highlighter-rouge">..density..</code>. Plotting this variable will show the relative frequency, which is the height times the width of each bin.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Plot mpg
+ggplot(mtcars, aes(mpg)) +
+  # Add a histogram layer
+  geom_histogram(binwidth = 1)
+</code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Map y to ..density..</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">mpg</span><span class="p">,</span><span class="w"> </span><span class="n">..density..</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_histogram</span><span class="p">(</span><span class="n">binwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>datacamp_light_blue &lt;- "#51A8C9"
+
+ggplot(mtcars, aes(mpg, ..density..)) +
+  # Set the fill color to datacamp_light_blue
+  geom_histogram(binwidth = 1, fill = datacamp_light_blue)
+</code></pre></div></div>
+
+<h3 id="positions-in-histograms">Positions in histograms</h3>
+
+<p>Here, we’ll examine the various ways of applying positions to histograms. <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_histogram"><code class="language-plaintext highlighter-rouge">geom_histogram()</code></a>, a special case of <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_bar"><code class="language-plaintext highlighter-rouge">geom_bar()</code></a>, has a <code class="language-plaintext highlighter-rouge">position</code> argument that can take on the following values:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">stack</code> (the default): Bars for different groups are stacked on top of each other.</li>
+  <li><code class="language-plaintext highlighter-rouge">dodge</code>: Bars for different groups are placed side by side.</li>
+  <li><code class="language-plaintext highlighter-rouge">fill</code>: Bars for different groups are shown as proportions.</li>
+  <li><code class="language-plaintext highlighter-rouge">identity</code>: Plot the values as they appear in the dataset.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(mpg, fill = fam)) +
+  # Change the position to dodge
+  geom_histogram(binwidth = 1, position = "dodge")
+</code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">mpg</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fam</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Change the position to identity, with transparency 0.4</span><span class="w">
+  </span><span class="n">geom_histogram</span><span class="p">(</span><span class="n">binwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.4</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="bar-plots">Bar Plots</h2>
+
+<h3 id="position-in-bar-and-col-plots">Position in bar and col plots</h3>
+
+<p>Let’s see how the <code class="language-plaintext highlighter-rouge">position</code> argument changes <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_bar"><code class="language-plaintext highlighter-rouge">geom_bar()</code></a>.</p>
+
+<p>We have three position options:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">stack</code>: The default</li>
+  <li><code class="language-plaintext highlighter-rouge">dodge</code>: Preferred</li>
+  <li><code class="language-plaintext highlighter-rouge">fill</code>: To show proportions</li>
+</ul>
+
+<p>While we will be using <code class="language-plaintext highlighter-rouge">geom_bar()</code> here, note that the function <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_col"><code class="language-plaintext highlighter-rouge">geom_col()</code></a> is just <code class="language-plaintext highlighter-rouge">geom_bar()</code> where both the <code class="language-plaintext highlighter-rouge">position</code> and <code class="language-plaintext highlighter-rouge">stat</code> arguments are set to <code class="language-plaintext highlighter-rouge">"identity"</code>. It is used when we want the heights of the bars to represent the exact values in the data.</p>
+
+<p>In this exercise, you’ll draw the total count of cars having a given number of cylinders (<code class="language-plaintext highlighter-rouge">fcyl</code>), according to manual or automatic transmission type (<code class="language-plaintext highlighter-rouge">fam</code>).</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">fcyl</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fam</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Set the position to "fill"</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"fill"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="overlapping-bar-plots">Overlapping bar plots</h3>
+
+<p>You can customize bar plots further by adjusting the dodging so that your bars partially overlap each other. Instead of using <code class="language-plaintext highlighter-rouge">position = "dodge"</code>, you’re going to use <code class="language-plaintext highlighter-rouge">position_dodge()</code>, like you did with <code class="language-plaintext highlighter-rouge">position_jitter()</code> in the the previous exercises. Here, you’ll save this as an object, <code class="language-plaintext highlighter-rouge">posn_d</code>, so that you can easily reuse it.</p>
+
+<p>Remember, the reason you want to use <code class="language-plaintext highlighter-rouge">position_dodge()</code> (and <code class="language-plaintext highlighter-rouge">position_jitter()</code>) is to specify <em>how much</em> dodging (or jittering) you want.</p>
+
+<p>For this example, you’ll use the <code class="language-plaintext highlighter-rouge">mtcars</code> dataset.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(cyl, fill = fam)) +
+  # Change position to use the functional form, with width i0.2
+  geom_bar(position = position_dodge(width = 0.2))
+# With transparency
+ggplot(mtcars, aes(cyl, fill = fam)) +
+  # Set the transparency to 0.6
+  geom_bar(position = position_dodge(width = 0.2), alpha = 0.6)
+</code></pre></div></div>
+
+<h3 id="bar-plots-sequential-color-palette">Bar plots: sequential color palette</h3>
+
+<p>In this bar plot, we’ll fill each segment according to an ordinal variable. The best way to do that is with a sequential color palette.</p>
+
+<p>Here’s an example of using a sequential color palette with the <code class="language-plaintext highlighter-rouge">mtcars</code> dataset:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(fcyl, fill = fam)) +
+  geom_bar() +
+  scale_fill_brewer(palette = "Set1")
+</code></pre></div></div>
+
+<p>In the exercise, you’ll use similar code on the the <code class="language-plaintext highlighter-rouge">Vocab</code> dataset. Both datasets are <strong>ordinal</strong>.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Plot education, filled by vocabulary</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">Vocab</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">education</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vocabulary</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Add a bar layer with position "fill"</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"fill"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Add a brewer fill scale with default palette</span><span class="w">
+  </span><span class="n">scale_fill_brewer</span><span class="p">(</span><span class="n">palette</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Set1"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="line-plots">Line plots</h2>
+
+<h3 id="basic-line-plots">Basic line plots</h3>
+
+<p>Here, we’ll use the <code class="language-plaintext highlighter-rouge">economics</code> dataset to make some line plots. The dataset contains a time series for unemployment and population statistics from the Federal Reserve Bank of St. Louis in the United States. The data is contained in the <code class="language-plaintext highlighter-rouge">ggplot2</code> package.</p>
+
+<p>To begin with, you can look at how the median unemployment time and the unemployment rate (the number of unemployed people as a proportion of the population) change over time.</p>
+
+<h3 id="multiple-time-series">Multiple time series</h3>
+
+<p>We already saw how the form of your data affects how you can plot it. Let’s explore that further with multiple time series. Here, it’s important that all lines are on the same scale, and if possible, on the same plot.</p>
+
+<p><code class="language-plaintext highlighter-rouge">fish.species</code> contains the global capture rates of seven salmon species from 1950–2010. Each variable (column) is a Salmon species and each observation (row) is one year. <code class="language-plaintext highlighter-rouge">fish.tidy</code> contains the same data, but in three columns: <code class="language-plaintext highlighter-rouge">Species</code>, <code class="language-plaintext highlighter-rouge">Year</code>, and <code class="language-plaintext highlighter-rouge">Capture</code> (i.e. one variable per column).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Plot the Rainbow Salmon time series
+ggplot(fish.species, aes(x = Year, y = Rainbow)) +
+  geom_line()
+
+# Plot the Pink Salmon time series
+ggplot(fish.species, aes(Year, Pink)) +
+  geom_line()
+</code></pre></div></div>
+
+<p>OJo: aquí la data tiene forma larga:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Plot the Rainbow Salmon time series
+ggplot(fish.species, aes(x = Year, y = Rainbow)) +
+  geom_line()
+
+# Plot the Pink Salmon time series
+ggplot(fish.species, aes(x = Year, y = Pink)) +
+  geom_line()
+
+# Plot multiple time-series by grouping by species
+ggplot(fish.tidy, aes(Year, Capture)) +
+  geom_line(aes(group = Species))
+</code></pre></div></div>
+
+<h2 id="themes-for-scratch">Themes for scratch</h2>
+
+<h3 id="moving-the-legend">Moving the legend</h3>
+
+<p>Let’s wrap up this course by making a publication-ready plot communicating a clear message.</p>
+
+<p>To change stylistic elements of a plot, call <a href="http://www.rdocumentation.org/packages/ggplot2/functions/theme"><code class="language-plaintext highlighter-rouge">theme()</code></a> and set plot properties to a new value. For example, the following changes the legend position.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">p</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_value</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here, the new value can be</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">"top"</code>, <code class="language-plaintext highlighter-rouge">"bottom"</code>, <code class="language-plaintext highlighter-rouge">"left"</code>, or <code class="language-plaintext highlighter-rouge">"right'"</code>: place it at that side of the plot.</li>
+  <li><code class="language-plaintext highlighter-rouge">"none"</code>: don’t draw it.</li>
+  <li><code class="language-plaintext highlighter-rouge">c(x, y)</code>: <code class="language-plaintext highlighter-rouge">c(0, 0)</code> means the bottom-left and <code class="language-plaintext highlighter-rouge">c(1, 1)</code> means the top-right.</li>
+</ul>
+
+<p>Let’s revisit the recession period line plot (assigned to <code class="language-plaintext highlighter-rouge">plt_prop_unemployed_over_time</code>).</p>
+
+<h3 id="modifying-theme-elements">Modifying theme elements</h3>
+
+<p>Many plot elements have multiple properties that can be set. For example, line elements in the plot such as axes and gridlines have a color, a thickness (<code class="language-plaintext highlighter-rouge">size</code>), and a line type (solid line, dashed, or dotted). To set the style of a line, you use <a href="https://www.rdocumentation.org/packages/ggplot2/topics/margin"><code class="language-plaintext highlighter-rouge">element_line()</code></a>. For example, to make the axis lines into red, dashed lines, you would use the following.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">p</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">theme</span><span class="p">(</span><span class="n">axis.line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_line</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"red"</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dashed"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Similarly, <code class="language-plaintext highlighter-rouge">element_rect()</code> changes rectangles and <code class="language-plaintext highlighter-rouge">element_text()</code> changes text. You can remove a plot element using <code class="language-plaintext highlighter-rouge">element_blank()</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">plt_prop_unemployed_over_time</code> is available.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plt_prop_unemployed_over_time +
+  theme(
+    # For all rectangles, set the fill color to grey92
+    rect = element_rect(fill = "grey92"),
+    # For the legend key, turn off the outline
+    legend.key = element_rect(color= NA))
+</code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt_prop_unemployed_over_time</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="w">
+    </span><span class="n">rect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_rect</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"grey92"</span><span class="p">),</span><span class="w">
+    </span><span class="n">legend.key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_rect</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">),</span><span class="w">
+    </span><span class="n">axis.ticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">panel.grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+    </span><span class="n">panel.grid.major.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_line</span><span class="p">(</span><span class="w">
+      </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"white"</span><span class="p">,</span><span class="w">
+      </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w">
+      </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dotted"</span><span class="w">
+    </span><span class="p">),</span><span class="w">
+    </span><span class="c1"># Set the axis text color to grey25</span><span class="w">
+    </span><span class="n">axis.text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"grey25"</span><span class="p">),</span><span class="w">
+    </span><span class="c1"># Set the plot title font face to italic and font size to 16</span><span class="w">
+   </span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="w">
+       </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">16</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"italic"</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="modifying-whitespace">Modifying whitespace</h3>
+
+<p><strong>Whitespace</strong> means all the non-visible margins and spacing in the plot.</p>
+
+<p>To set a single whitespace value, use <a href="https://www.rdocumentation.org/packages/grid/topics/unit"><code class="language-plaintext highlighter-rouge">unit(x, unit)</code></a>, where <code class="language-plaintext highlighter-rouge">x</code> is the amount and <code class="language-plaintext highlighter-rouge">unit</code> is the unit of measure.</p>
+
+<p>Borders require you to set 4 positions, so use <a href="https://www.rdocumentation.org/packages/ggplot2/topics/margin"><code class="language-plaintext highlighter-rouge">margin(top, right, bottom, left, unit)</code></a>. To remember the margin order, think <strong>TRouBLe</strong>.</p>
+
+<p>The default unit is <code class="language-plaintext highlighter-rouge">"pt"</code> (points), which scales well with text. Other options include “cm”, “in” (inches) and “lines” (of text).</p>
+
+<p><code class="language-plaintext highlighter-rouge">plt_mpg_vs_wt_by_cyl</code> is available. The panel and legend are wrapped in blue boxes so you can see how they change.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># View the original plot
+plt_mpg_vs_wt_by_cyl
+
+plt_mpg_vs_wt_by_cyl +
+  theme(
+    # Set the axis tick length to 2 lines
+    axis.ticks.length = unit(2, "lines")
+  )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plt_mpg_vs_wt_by_cyl +
+  theme(
+    # Set the legend key size to 3 centimeters
+    legend.key.size = unit(3, "cm")
+  )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plt_mpg_vs_wt_by_cyl +
+  theme(
+    # Set the legend margin to (20, 30, 40, 50) points
+    legend.margin = margin(20, 30, 40, 50, "pt")
+  )
+</code></pre></div></div>
+
+<h2 id="themes">Themes</h2>
+
+<h3 id="built-in-themes">Built-in themes</h3>
+
+<p>In addition to making your own themes, there are several <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">out-of-the-box solutions</a> that may save you lots of time.</p>
+
+<ul>
+  <li><a href="http://www.rdocumentation.org/packages/ggplot2/functions/ggtheme"><code class="language-plaintext highlighter-rouge">theme_gray()</code></a> is the default.</li>
+  <li><a href="http://www.rdocumentation.org/packages/ggplot2/functions/ggtheme"><code class="language-plaintext highlighter-rouge">theme_bw()</code></a> is useful when you use transparency.</li>
+  <li><a href="http://www.rdocumentation.org/packages/ggplot2/functions/ggtheme"><code class="language-plaintext highlighter-rouge">theme_classic()</code></a> is more traditional.</li>
+  <li><a href="http://www.rdocumentation.org/packages/ggplot2/functions/ggtheme"><code class="language-plaintext highlighter-rouge">theme_void()</code></a> removes everything but the data.</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">plt_prop_unemployed_over_time</code> is available.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add a classic theme
+plt_prop_unemployed_over_time +
+  theme_classic()
+</code></pre></div></div>
+
+<h3 id="exploring-ggthemes">Exploring ggthemes</h3>
+
+<p>Outside of <code class="language-plaintext highlighter-rouge">ggplot2</code>, another source of built-in themes is the <code class="language-plaintext highlighter-rouge">ggthemes</code> package. The workspace already contains the <code class="language-plaintext highlighter-rouge">plt_prop_unemployed_over_time</code>, the line plot from before. Let’s explore some of the ready-made <code class="language-plaintext highlighter-rouge">ggthemes</code> themes.</p>
+
+<p><code class="language-plaintext highlighter-rouge">plt_prop_unemployed_over_time</code> is available.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Use the fivethirtyeight theme</span><span class="w">
+</span><span class="n">plt_prop_unemployed_over_time</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_fivethirtyeight</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Other themes: wsj, tufte</p>
+
+<h3 id="setting-themes">Setting themes</h3>
+
+<p>Reusing a theme across many plots helps to provide a consistent style. You have several options for this.</p>
+
+<ol>
+  <li>Assign the theme to a variable, and add it to each plot.</li>
+  <li>Set your theme as the default using <a href="https://www.rdocumentation.org/packages/ggplot2/topics/theme_get"><code class="language-plaintext highlighter-rouge">theme_set()</code></a>.</li>
+</ol>
+
+<p>A good strategy that you’ll use here is to begin with a built-in theme then modify it.</p>
+
+<p><code class="language-plaintext highlighter-rouge">plt_prop_unemployed_over_time</code> is available. The theme you made earlier is shown in the sample code.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>theme_recession &lt;- theme(
+  rect = element_rect(fill = "grey92"),
+  legend.key = element_rect(color = NA),
+  axis.ticks = element_blank(),
+  panel.grid = element_blank(),
+  panel.grid.major.y = element_line(color = "white", size = 0.5, linetype = "dotted"),
+  axis.text = element_text(color = "grey25"),
+  plot.title = element_text(face = "italic", size = 16),
+  legend.position = c(0.6, 0.1)
+)
+theme_tufte_recession &lt;- theme_tufte() + theme_recession
+
+# Set theme_tufte_recession as the default theme
+theme_set(theme_tufte_recession)
+
+# Draw the plot (without explicitly adding a theme)
+plt_prop_unemployed_over_time
+</code></pre></div></div>
+
+<h3 id="publication-quality-plots">Publication-quality plots</h3>
+
+<p>We’ve seen many examples of beautiful, publication-quality plots. Let’s take a final look and put all the pieces together.</p>
+
+<p><code class="language-plaintext highlighter-rouge">plt_prop_unemployed_over_time</code> is available.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plt_prop_unemployed_over_time +
+  theme_tufte() +
+  # Add individual theme elements
+  theme(
+    # Turn off the legend
+    legend.position = "none",
+    # Turn off the axis ticks
+    axis.ticks = element_blank()
+  )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plt_prop_unemployed_over_time +
+  theme_tufte() +
+  theme(
+    legend.position = "none",
+    axis.ticks = element_blank(),
+    axis.title = element_text(color = "grey60"),
+    axis.text = element_text(color = "grey60"),
+    # Set the panel gridlines major y values
+    panel.grid.major.y = element_line(
+      # Set the color to grey60
+      color = "grey60",
+      # Set the size to 0.25
+      size = 0.25,
+      # Set the linetype to dotted
+      linetype = "dotted"
+    )
+  )
+</code></pre></div></div>
+
+<h3 id="using-geoms-for-explanatory-plots">Using geoms for explanatory plots</h3>
+
+<p>Let’s focus on producing beautiful and effective explanatory plots. In the next couple of exercises, you’ll create a plot that is similar to the one shown in the video using <code class="language-plaintext highlighter-rouge">gm2007</code>, a filtered subset of the <code class="language-plaintext highlighter-rouge">gapminder</code> dataset.</p>
+
+<p>This type of plot will be in an info-viz style, meaning that it would be similar to something you’d see in a magazine or website for a mostly lay audience.</p>
+
+<p>A scatterplot of <code class="language-plaintext highlighter-rouge">lifeExp</code> by <code class="language-plaintext highlighter-rouge">country</code>, colored by <code class="language-plaintext highlighter-rouge">lifeExp</code>, with points of size <code class="language-plaintext highlighter-rouge">4</code>, is provided.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add a geom_segment() layer
+ggplot(gm2007, aes(x = lifeExp, y = country, color = lifeExp)) +
+  geom_point(size = 4) +
+  geom_segment(aes(xend = 30, yend = country), size = 2)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">xend = 30</code> significa que 30 es la esperanza de  vida de inicio del eje X (valor de inicio)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Set the color scale
+palette &lt;- brewer.pal(5, "RdYlBu")[-(2:4)]
+
+# Modify the scales
+ggplot(gm2007, aes(x = lifeExp, y = country, color = lifeExp)) +
+  geom_point(size = 4) +
+  geom_segment(aes(xend = 30, yend = country), size = 2) +
+  geom_text(aes(label = round(lifeExp,1)), color = "white", size = 1.5) +
+  scale_x_continuous("", expand = c(0,0), limits = c(30,90), position = "top") +
+  scale_color_gradientn(colors = palette)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Set the color scale
+palette &lt;- brewer.pal(5, "RdYlBu")[-(2:4)]
+
+# Add a title and caption
+ggplot(gm2007, aes(x = lifeExp, y = country, color = lifeExp)) +
+  geom_point(size = 4) +
+  geom_segment(aes(xend = 30, yend = country), size = 2) +
+  geom_text(aes(label = round(lifeExp,1)), color = "white", size = 1.5) +
+  scale_x_continuous("", expand = c(0,0), limits = c(30,90), position = "top") +
+  scale_color_gradientn(colors = palette) +
+  labs(title = "Highest and lowest life expectancies, 2007", caption = "Source: gapminder")
+</code></pre></div></div>
+
+<h3 id="using-annotate-for-embellishments">Using annotate() for embellishments</h3>
+
+<p>In the previous exercise, we completed our basic plot. Now let’s polish it by playing with the theme and adding annotations. In this exercise, you’ll use <code class="language-plaintext highlighter-rouge">annotate()</code> to add text and a curve to the plot.</p>
+
+<p>The following values have been calculated for you to assist with adding embellishments to the plot:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>global_mean &lt;- mean(gm2007_full$lifeExp)
+x_start &lt;- global_mean + 4
+y_start &lt;- 5.5
+x_end &lt;- global_mean
+y_end &lt;- 7.5
+</code></pre></div></div>
+
+<p>Our previous plot has been assigned to <code class="language-plaintext highlighter-rouge">plt_country_vs_lifeExp</code>.</p>
+
+<p>CODIGOS</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define the theme
+plt_country_vs_lifeExp +
+  theme_classic() +
+  theme(axis.line.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text = element_text(color = "black"),
+        axis.title = element_blank(),
+        legend.position = "none")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add a vertical line
+plt_country_vs_lifeExp +
+  step_1_themes +
+  geom_vline(xintercept = global_mean, color = "grey40", linetype = 3)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add text
+plt_country_vs_lifeExp +
+  step_1_themes +
+  geom_vline(xintercept = global_mean, color = "grey40", linetype = 3) +
+  annotate(
+    "text",
+    x = x_start, y = y_start,
+    label = "The\nglobal\naverage",
+    vjust = 1, size = 3, color = "grey40"
+  )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add a curve
+plt_country_vs_lifeExp +  
+  step_1_themes +
+  geom_vline(xintercept = global_mean, color = "grey40", linetype = 3) +
+  step_3_annotation +
+  annotate(
+    "curve",
+    x = x_start, y = y_start,
+    xend = x_end, yend = y_end,
+    arrow = arrow(length = unit(0.2, "cm"), type = "closed"),
+    color = "grey40"
+  )
+</code></pre></div></div>
+
+:ET

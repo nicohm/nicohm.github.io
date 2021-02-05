@@ -1,0 +1,948 @@
+I"�<h1 id="intermediate-ggplot2">Intermediate ggplot2</h1>
+
+<p>[TOC]</p>
+
+<h2 id="stats-with-geoms">Stats with geoms</h2>
+
+<h3 id="smoothing">Smoothing</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Amend the plot to add a smooth layer
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth()
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">geom_smooth()</code> using method = ‘loess’ and formula ‘y ~ x’. Use the default method, which uses the LOESS model to fit the curve.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Amend the plot. Use lin. reg. smoothing; turn off std err ribbon
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+</code></pre></div></div>
+
+<h3 id="grouping-variables">Grouping variables</h3>
+
+<p>We’ll continue with the previous exercise by considering the situation of looking at sub-groups in our dataset. For this we’ll encounter the invisible <code class="language-plaintext highlighter-rouge">group</code> aesthetic.</p>
+
+<p><code class="language-plaintext highlighter-rouge">mtcars</code> has been given an extra column, <code class="language-plaintext highlighter-rouge">fcyl</code>, that is the <code class="language-plaintext highlighter-rouge">cyl</code> column converted to a proper factor variable.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Amend the plot to add another smooth layer with dummy grouping
+ggplot(mtcars, aes(x = wt, y = mpg, color = fcyl)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Amend the plot to add another smooth layer with dummy grouping
+ggplot(mtcars, aes(x = wt, y = mpg, color = fcyl)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) +
+  stat_smooth(aes(group = 1), method = "lm", se = FALSE)
+</code></pre></div></div>
+
+<h3 id="modifying-stat_smooth">Modifying stat_smooth</h3>
+
+<p>In the previous exercise we used <code class="language-plaintext highlighter-rouge">se = FALSE</code> in <code class="language-plaintext highlighter-rouge">stat_smooth()</code> to remove the 95% Confidence Interval. Here we’ll consider another argument, <code class="language-plaintext highlighter-rouge">span</code>, used in LOESS smoothing, and we’ll take a look at a nice scenario of properly mapping different models.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Amend the plot to color by fcyl
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  # Add a smooth LOESS stat, no ribbon
+  stat_smooth(se = FALSE) +
+  # Add a smooth lin. reg. stat, no ribbon
+  stat_smooth(method = "lm")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Amend the plot
+ggplot(mtcars, aes(x = wt, y = mpg, color = fcyl)) +
+  geom_point() +
+  # Map color to dummy variable "All"
+  stat_smooth(aes(color = "All"), se = FALSE) +
+  stat_smooth(method = "lm", se = FALSE)
+</code></pre></div></div>
+
+<h3 id="modifying-stat_smooth-2">Modifying stat_smooth (2)</h3>
+
+<p>In this exercise we’ll take a look at the standard error ribbons, which show the 95% confidence interval of smoothing models. <code class="language-plaintext highlighter-rouge">ggplot2</code> and the <code class="language-plaintext highlighter-rouge">Vocab</code> data frame are already loaded for you.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Vocab</code> has been given an extra column, <code class="language-plaintext highlighter-rouge">year_group</code>, splitting the dates into before and after 1995.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Using Vocab, plot vocabulary vs. education, colored by year group
+ggplot(Vocab, aes(education, vocabulary, color = year_group)) +
+  # Add jittered points with transparency 0.25
+  geom_jitter(alpha = 0.25) +
+  # Add a smooth lin. reg. line (with ribbon)
+  stat_smooth(method = "lm")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Amend the plot
+ggplot(Vocab, aes(x = education, y = vocabulary, color = year_group)) +
+  geom_jitter(alpha = 0.25) +
+  # Map the fill color to year_group, set the line size to 2
+  stat_smooth(aes(fill = year_group),method = "lm", size = 2)
+</code></pre></div></div>
+
+<h2 id="stats--sum-and-quantile">Stats : sum and quantile</h2>
+
+<h3 id="quantiles">Quantiles</h3>
+
+<p>Here, we’ll continue with the <code class="language-plaintext highlighter-rouge">Vocab</code> dataset and use <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_quantile"><code class="language-plaintext highlighter-rouge">stat_quantile()</code></a> to apply a quantile regression.</p>
+
+<p>Linear regression predicts the mean response from the explanatory variables, quantile regression predicts a quantile response (e.g. the median) from the explanatory variables. Specific quantiles can be specified with the <code class="language-plaintext highlighter-rouge">quantiles</code> argument.</p>
+
+<p>Specifying many quantiles <em>and</em> color your models according to year can make plots too busy. We’ll explore ways of dealing with this in the next chapter.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">Vocab</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">education</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vocabulary</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_jitter</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.25</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Add a quantile stat, at 0.05, 0.5, and 0.95</span><span class="w">
+  </span><span class="n">stat_quantile</span><span class="p">(</span><span class="n">quantiles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.05</span><span class="p">,</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="m">0.95</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Amend the plot to color by year_group
+ggplot(Vocab, aes(x = education, y = vocabulary, color = year_group)) +
+  geom_jitter(alpha = 0.25) +
+  stat_quantile(quantiles = c(0.05, 0.5, 0.95))
+</code></pre></div></div>
+
+<h3 id="using-stat_sum">Using stat_sum</h3>
+
+<p>In the <code class="language-plaintext highlighter-rouge">Vocab</code> dataset, <code class="language-plaintext highlighter-rouge">education</code> and <code class="language-plaintext highlighter-rouge">vocabulary</code> are integer variables. In the first course, you saw that this is one of the four causes of overplotting. You’d get a single point at each intersection between the two variables.</p>
+
+<p>One solution, shown in the step 1, is jittering with transparency. Another solution is to use <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_count"><code class="language-plaintext highlighter-rouge">stat_sum()</code></a>, which calculates the total number of overlapping observations and maps that onto the <code class="language-plaintext highlighter-rouge">size</code> aesthetic.</p>
+
+<p><code class="language-plaintext highlighter-rouge">stat_sum()</code> allows a special variable, <code class="language-plaintext highlighter-rouge">..prop..</code>, to show the <em>proportion</em> of values within the dataset.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Run this, look at the plot, then update it
+ggplot(Vocab, aes(x = education, y = vocabulary)) +
+  # Replace this with a sum stat
+  geom_jitter(alpha = 0.25)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(Vocab, aes(x = education, y = vocabulary)) +
+  stat_sum() +
+  # Add a size scale, from 1 to 10
+  scale_size(range = c(1,10))
+</code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Amend the stat to use proportion sizes</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">Vocab</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">education</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vocabulary</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">stat_sum</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">..prop..</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Amend the plot to group by education
+ggplot(Vocab, aes(x = education, y = vocabulary, group = education)) +
+  stat_sum(aes(size = ..prop..))
+</code></pre></div></div>
+
+<h2 id="stats-outside-geoms">Stats outside geoms</h2>
+
+<h3 id="preparations">Preparations</h3>
+
+<p>In the following exercises, we’ll aim to make the plot shown in the viewer. Here, we’ll establish our positions and base layer of the plot.</p>
+
+<p>Establishing these items as independent objects will allow us to recycle them easily in many layers, or plots.</p>
+
+<ul>
+  <li><a href="http://www.rdocumentation.org/packages/ggplot2/functions/position_jitter"><code class="language-plaintext highlighter-rouge">position_jitter()</code></a> adds <em>jittering</em> (e.g. for points).</li>
+  <li><a href="http://www.rdocumentation.org/packages/ggplot2/functions/position_dodge"><code class="language-plaintext highlighter-rouge">position_dodge()</code></a> <em>dodges</em> geoms, (e.g. bar, col, boxplot, violin, errorbar, pointrange).</li>
+  <li><a href="http://www.rdocumentation.org/packages/ggplot2/functions/position_jitterdodge"><code class="language-plaintext highlighter-rouge">position_jitterdodge()</code></a> <em>jitters</em> <strong>and</strong> <em>dodges</em> geoms, (e.g. points).</li>
+</ul>
+
+<p>As before, we’ll use <code class="language-plaintext highlighter-rouge">mtcars</code>, where <code class="language-plaintext highlighter-rouge">fcyl</code> and <code class="language-plaintext highlighter-rouge">fam</code> are proper factor variables of the original <code class="language-plaintext highlighter-rouge">cyl</code> and <code class="language-plaintext highlighter-rouge">am</code> variables.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># From previous step</span><span class="w">
+</span><span class="n">posn_j</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">position_jitter</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span><span class="p">)</span><span class="w">
+</span><span class="n">posn_d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">position_dodge</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span><span class="w">
+</span><span class="n">posn_jd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">position_jitterdodge</span><span class="p">(</span><span class="n">jitter.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span><span class="p">,</span><span class="w"> </span><span class="n">dodge.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Create the plot base: wt vs. fcyl, colored by fam</span><span class="w">
+</span><span class="n">p_wt_vs_fcyl_by_fam</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ggplot</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">fcyl</span><span class="p">,</span><span class="w"> </span><span class="n">wt</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fam</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># Add a point layer</span><span class="w">
+</span><span class="n">p_wt_vs_fcyl_by_fam</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="using-position-objects">Using position objects</h3>
+
+<p>Now that the position objects have been created, you can apply them to the base plot to see their effects. You do this by adding a point geom and setting the <code class="language-plaintext highlighter-rouge">position</code> argument to the position object.</p>
+
+<p>The variables from the last exercise, <code class="language-plaintext highlighter-rouge">posn_j</code>, <code class="language-plaintext highlighter-rouge">posn_d</code>, <code class="language-plaintext highlighter-rouge">posn_jd</code>, and <code class="language-plaintext highlighter-rouge">p_wt_vs_fcyl_by_fam</code> are available in your workspace.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add jittering only
+p_wt_vs_fcyl_by_fam +
+  geom_point(position = posn_j)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add jittering and dodging
+p_wt_vs_fcyl_by_fam +
+  geom_point(position = posn_jd)
+</code></pre></div></div>
+
+<h3 id="plotting-variations">Plotting variations</h3>
+
+<p>The preparation is done; now let’s explore <a href="http://www.rdocumentation.org/packages/ggplot2/functions/stat_summary"><code class="language-plaintext highlighter-rouge">stat_summary()</code></a>.</p>
+
+<p><em>Summary statistics</em> refers to a combination of <em>location</em> (mean or median) and <em>spread</em> (standard deviation or confidence interval).</p>
+
+<p>These metrics are calculated in <code class="language-plaintext highlighter-rouge">stat_summary()</code> by passing a function to the <code class="language-plaintext highlighter-rouge">fun.data</code> argument. <code class="language-plaintext highlighter-rouge">mean_sdl()</code>, calculates multiples of the standard deviation and <code class="language-plaintext highlighter-rouge">mean_cl_normal()</code> calculates the t-corrected 95% CI.</p>
+
+<p>Arguments to the data function are passed to <code class="language-plaintext highlighter-rouge">stat_summary()</code>’s <code class="language-plaintext highlighter-rouge">fun.args</code> argument as a list.</p>
+
+<p>The position object, <code class="language-plaintext highlighter-rouge">posn_d</code>, and the plot with jittered points, <code class="language-plaintext highlighter-rouge">p_wt_vs_fcyl_by_fam_jit</code>, are available.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p_wt_vs_fcyl_by_fam_jit +
+  # Add a summary stat of std deviation limits
+  stat_summary(fun.data = mean_sdl, 
+               fun.args = list(mult = 1), 
+               position = posn_d)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p_wt_vs_fcyl_by_fam_jit +
+  # Change the geom to be an errorbar
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), position = posn_d, geom = "errorbar")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p_wt_vs_fcyl_by_fam_jit +
+  # Add a summary stat of normal confidence limits
+  stat_summary(fun.data = mean_cl_normal, position = posn_d)
+</code></pre></div></div>
+
+<h2 id="the-coordinates-layer">The coordinates layer</h2>
+
+<h3 id="zooming-in">Zooming In</h3>
+
+<p>In the video, you saw different ways of using the coordinates layer to zoom in. In this exercise, we’ll compare zooming by changing scales and by changing coordinates.</p>
+
+<p>The big difference is that the scale functions change the underlying dataset, which affects calculations made by computed geoms (like histograms or smooth trend lines), whereas coordinate functions make no changes to the dataset.</p>
+
+<p>A scatter plot using <code class="language-plaintext highlighter-rouge">mtcars</code> with a LOESS smoothed trend line is provided. Take a look at this before updating it.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Run the code, view the plot, then update it
+ggplot(mtcars, aes(x = wt, y = hp, color = fam)) +
+  geom_point() +
+  geom_smooth() +
+  # Add a continuous x scale from 3 to 6
+  scale_x_continuous(limits = c(3,6))
+</code></pre></div></div>
+
+<p>Lo anterior genera un problema¡¡¡¡¡¡¡¡¡¡¡¡¡,  <strong>SOLUCION</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(x = wt, y = hp, color = fam)) +
+  geom_point() +
+  geom_smooth() +
+  # Add Cartesian coordinates with x limits from 3 to 6
+  coord_cartesian(xlim = c(3,6))
+</code></pre></div></div>
+
+<h3 id="aspect-ratio-i-11-ratios">Aspect ratio I: 1:1 ratios</h3>
+
+<p>We can set the aspect ratio of a plot with <a href="http://www.rdocumentation.org/packages/ggplot2/functions/coord_fixed"><code class="language-plaintext highlighter-rouge">coord_fixed()</code></a>, which uses <code class="language-plaintext highlighter-rouge">ratio = 1</code> as a default. A 1:1 aspect ratio is most appropriate when two continuous variables are on the same scale, as with the <code class="language-plaintext highlighter-rouge">iris</code> dataset.</p>
+
+<p>All variables are measured in centimeters, so it only makes sense that one unit on the plot should be the same physical distance on each axis. This gives a more truthful depiction of the relationship between the two variables since the aspect ratio can change the angle of our smoothing line. This would give an erroneous impression of the data. Of course the underlying linear models don’t change, but our perception can be influenced by the angle drawn.</p>
+
+<p>A plot using the <code class="language-plaintext highlighter-rouge">iris</code> dataset, of sepal width vs. sepal length colored by species, is shown in the viewer.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE) +
+  # Fix the coordinate ratio
+  coord_fixed(ratio = 1)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Fix the aspect ratio to 1:1
+sun_plot +
+  coord_fixed(ratio = 20)
+</code></pre></div></div>
+
+<p>Esto corrige que no se vea toda la data</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Change the aspect ratio to 20:1
+sun_plot +
+  coord_fixed(ratio = 20/1)
+</code></pre></div></div>
+
+<p>x/y</p>
+
+<h3 id="expand-and-clip">Expand and clip</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">coord_*()</code> layer functions offer two useful arguments that work well together: <code class="language-plaintext highlighter-rouge">expand</code> and <code class="language-plaintext highlighter-rouge">clip</code>.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">expand</code> sets a buffer margin around the plot, so data and axes don’t overlap. Setting <code class="language-plaintext highlighter-rouge">expand</code> to <code class="language-plaintext highlighter-rouge">0</code> draws the axes to the limits of the data.</li>
+  <li><code class="language-plaintext highlighter-rouge">clip</code> decides whether plot elements that would lie outside the plot panel are displayed or ignored (“clipped”).</li>
+</ul>
+
+<p>When done properly this can make a great visual effect! We’ll use <code class="language-plaintext highlighter-rouge">theme_classic()</code> and modify the axis lines in this example.</p>
+
+<ul>
+  <li>Add Cartesian coordinates with zero expansion, to remove all buffer margins on both the x and y axes.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(size = 2) +
+  # Add Cartesian coordinates with zero expansion
+  coord_cartesian(expand = 0) +
+  theme_classic()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(size = 2) +
+  # Turn clipping off
+  coord_cartesian(expand = 0, clip = "off") +
+  theme_classic() +
+  # Remove axis lines
+  theme(
+    axis.line = element_blank()
+  )
+</code></pre></div></div>
+
+<h2 id="coordinates-vs-scales">Coordinates vs Scales</h2>
+
+<h2 id="log-transforming-scales">Log-transforming scales</h2>
+
+<p>Using <code class="language-plaintext highlighter-rouge">scale_y_log10()</code> and <code class="language-plaintext highlighter-rouge">scale_x_log10()</code> is equivalent to transforming our actual dataset <em>before</em> getting to <code class="language-plaintext highlighter-rouge">ggplot2</code>.</p>
+
+<p>Using <code class="language-plaintext highlighter-rouge">coord_trans()</code>, setting <code class="language-plaintext highlighter-rouge">x = "log10"</code> and/or <code class="language-plaintext highlighter-rouge">y = "log10"</code> arguments, transforms the data <em>after</em> statistics have been calculated. The plot will look the same as with using <code class="language-plaintext highlighter-rouge">scale_*_log10()</code>, but the scales will be different, meaning that we’ll see the original values on our log10 transformed axes. This can be useful since log scales can be somewhat unintuitive.</p>
+
+<p>Let’s see this in action with positively skewed data - the brain and body weight of 51 mammals from the <code class="language-plaintext highlighter-rouge">msleep</code> dataset.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Produce a scatter plot of brainwt vs. bodywt
+ggplot(msleep, aes(bodywt, brainwt)) +
+  geom_point() +
+  ggtitle("Raw Values")
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_1.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add scale_*_*() functions
+ggplot(msleep, aes(bodywt, brainwt)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10() +
+  ggtitle("Scale_ functions")
+</code></pre></div></div>
+
+<p>asd</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Perform a log10 coordinate system transformation</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">msleep</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">bodywt</span><span class="p">,</span><span class="w"> </span><span class="n">brainwt</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">coord_trans</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"log10"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"log10"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_3.png" width="400" /></p>
+
+<h3 id="adding-stats-to-transformed-scales">Adding stats to transformed scales</h3>
+
+<p>In the last exercise, we saw the usefulness of the <code class="language-plaintext highlighter-rouge">coord_trans()</code> function, but be careful! Remember that statistics are calculated on the untransformed data. A linear model may end up looking not-so-linear after an axis transformation. Let’s revisit the two plots from the previous exercise and compare their linear models.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Plot with a scale_*_*() function:</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">msleep</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">bodywt</span><span class="p">,</span><span class="w"> </span><span class="n">brainwt</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_smooth</span><span class="p">(</span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lm"</span><span class="p">,</span><span class="w"> </span><span class="n">se</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Add a log10 x scale</span><span class="w">
+  </span><span class="n">scale_x_log10</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Add a log10 y scale</span><span class="w">
+  </span><span class="n">scale_y_log10</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Scale functions"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_4.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	# Plot with transformed coordinates
+ggplot(msleep, aes(bodywt, brainwt)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  # Add a log10 coordinate transformation for x and y axes
+  coord_trans(x = "log10", y = "log10")
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_5.png" width="400" /></p>
+
+<h2 id="double-and-flipped-axes">Double and flipped axes</h2>
+
+<h3 id="useful-double-axes">Useful double axes</h3>
+
+<p>Double x and y-axes are a contentious topic in data visualization. We’ll revisit that discussion at the end of chapter 4. Here, I want to review a great use case where double axes actually do add value to a plot.</p>
+
+<p>Our goal plot is displayed in the viewer. The two axes are the raw temperature values on a Fahrenheit scale and the transformed values on a Celsius scale.</p>
+
+<p>You can imagine a similar scenar	io for Log-transformed and original values, miles and kilometers, or pounds and kilograms. A scale that is unintuitive for many people can be made easier by adding a transformation as a double axis.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># From previous step
+y_breaks &lt;- c(59, 68, 77, 86, 95, 104)
+y_labels &lt;- (y_breaks - 32) * 5 / 9
+secondary_y_axis &lt;- sec_axis(
+  trans = identity,
+  name = "Celsius",
+  breaks = y_breaks,
+  labels = y_labels
+)
+
+# Update the plot
+ggplot(airquality, aes(Date, Temp)) +
+  geom_line() +
+  # Add the secondary y-axis 
+  scale_y_continuous(sec.axis = secondary_y_axis) +
+  labs(x = "Date (1973)", y = "Fahrenheit")
+</code></pre></div></div>
+
+<h3 id="flipping-axes-i">Flipping axes I</h3>
+
+<p><em>Flipping</em> axes means to reverse the variables mapped onto the <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> aesthetics. We can just change the mappings in <code class="language-plaintext highlighter-rouge">aes()</code>, but we can also use the <code class="language-plaintext highlighter-rouge">coord_flip()</code> layer function.</p>
+
+<p>There are two reasons to use this function:</p>
+
+<ul>
+  <li>We want a vertical geom to be horizontal, or</li>
+  <li>We’ve completed a long series of plotting functions and want to flip it without having to rewrite all our commands.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(fcyl, fill = fam)) +
+  geom_bar(position = "dodge") +
+  # Flip the x and y coordinates
+  coord_flip()
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_6.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(fcyl, fill = fam)) +
+  # Set a dodge width of 0.5 for partially overlapping bars
+  geom_bar(position = position_dodge(width = 0.5)) +
+  coord_flip()
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_7.png" width="400" /></p>
+
+<h3 id="flipping-axes-ii">Flipping axes II</h3>
+
+<p>In this exercise, we’ll continue to use the <code class="language-plaintext highlighter-rouge">coord_flip()</code> layer function to reverse the variables mapped onto the <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> aesthetics.</p>
+
+<p>Within the <code class="language-plaintext highlighter-rouge">mtcars</code> dataset, <code class="language-plaintext highlighter-rouge">car</code> is the name of the car and <code class="language-plaintext highlighter-rouge">wt</code> is its weight.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Flip the axes to set car to the y axis
+ggplot(mtcars, aes(car, wt)) +
+  geom_point() +
+  labs(x = "car", y = "weight") +
+  coord_flip()
+</code></pre></div></div>
+
+<h2 id="polar-coordinates">Polar coordinates</h2>
+
+<h2 id="pie-charts">Pie charts</h2>
+
+<p>The <a href="http://www.rdocumentation.org/packages/ggplot2/functions/coord_polar"><code class="language-plaintext highlighter-rouge">coord_polar()</code></a> function converts a planar x-y Cartesian plot to polar coordinates. This can be useful if you are producing pie charts.</p>
+
+<p>We can imagine two forms for pie charts - the typical filled circle, or a colored ring.</p>
+
+<p>Typical pie charts omit all of the non-data ink, which we saw in the themes chapter of the last course. Pie charts are not really better than stacked bar charts, but we’ll come back to this point in the next chapter.</p>
+
+<p>A bar plot using <code class="language-plaintext highlighter-rouge">mtcars</code> of the number of cylinders (as a factor), <code class="language-plaintext highlighter-rouge">fcyl</code>, is shown in the plot viewer.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Run the code, view the plot, then update it
+ggplot(mtcars, aes(x = 1, fill = fcyl)) +
+  geom_bar() +
+  # Add a polar coordinate system
+  coord_polar(theta = "y")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(x = 1, fill = fcyl)) +
+  # Reduce the bar width to 0.1
+  geom_bar(width = 0.1) +
+  coord_polar(theta = "y") +
+  # Add a continuous x scale from 0.5 to 1.5
+  scale_x_continuous(limits = c(0.5, 1.5))
+</code></pre></div></div>
+
+<h3 id="wind-rose-plots">Wind rose plots</h3>
+
+<p>Polar coordinate plots are well-suited to scales like compass direction or time of day. A popular example is the “wind rose”.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">wind</code> dataset is taken from the <code class="language-plaintext highlighter-rouge">openair</code> package and contains hourly measurements for windspeed (<code class="language-plaintext highlighter-rouge">ws</code>) and direction (<code class="language-plaintext highlighter-rouge">wd</code>) from London in 2003. Both variables are factors.</p>
+
+<ul>
+  <li>Use a <code class="language-plaintext highlighter-rouge">geom_bar()</code> layer, since we want to aggregate over all date values, and set the <code class="language-plaintext highlighter-rouge">width</code> argument to 1, to eliminate any spaces between the bars.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Using wind, plot wd filled by ws
+ggplot(wind, aes(wd, fill = ws)) +
+  # Add a bar layer with width 1
+  geom_bar(width = 1)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Convert to polar coordinates:
+ggplot(wind, aes(wd, fill = ws)) +
+  geom_bar(width = 1) +
+  coord_polar()
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_8.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Convert to polar coordinates:
+ggplot(wind, aes(wd, fill = ws)) +
+  geom_bar(width = 1) +
+  coord_polar(start = -pi/16)
+</code></pre></div></div>
+
+<h2 id="the-facet-layer">The facet layer</h2>
+
+<h3 id="facet-layer-basics">Facet layer basics</h3>
+
+<p>Faceting splits the data up into groups, according to a categorical variable, then plots each group in its own panel. For splitting the data by one or two categorical variables, <a href="http://www.rdocumentation.org/packages/ggplot2/functions/facet_grid"><code class="language-plaintext highlighter-rouge">facet_grid()</code></a> is best.</p>
+
+<p>Given categorical variables <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">B</code>, the code pattern is</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plot +
+  facet_grid(rows = vars(A), cols = vars(B))
+</code></pre></div></div>
+
+<p>This draws a panel for each pairwise combination of the values of <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">B</code>.</p>
+
+<p>Here, we’ll use the <code class="language-plaintext highlighter-rouge">mtcars</code> data set to practice. Although <code class="language-plaintext highlighter-rouge">cyl</code> and <code class="language-plaintext highlighter-rouge">am</code> are not encoded as factor variables in the data set, <code class="language-plaintext highlighter-rouge">ggplot2</code> will coerce variables to factors when used in facets.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(wt, mpg)) + 
+  geom_point() +
+  # Facet rows by am
+  facet_grid(rows = vars(am))
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_9.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(wt, mpg)) + 
+  geom_point() +
+  # Facet rows by am and columns by cyl
+  facet_grid(rows = vars(am), cols = vars(cyl))
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_10.png" width="400" /></p>
+
+<h3 id="many-variables">Many variables</h3>
+
+<p>In addition to aesthetics, facets are another way of encoding factor (i.e. categorical) variables. They can be used to reduce the complexity of plots with many variables.</p>
+
+<p>Our goal is the plot in the viewer, which contains 7 variables.</p>
+
+<p>Two variables are mapped onto the color aesthetic, using hue and lightness. To achieve this we combined <code class="language-plaintext highlighter-rouge">fcyl</code> and <code class="language-plaintext highlighter-rouge">fam</code> into a single <a href="https://www.rdocumentation.org/packages/base/topics/interaction">interaction</a> variable, <code class="language-plaintext highlighter-rouge">fcyl_fam</code>. This will allow us to take advantage of Color Brewer’s <em>Paired</em> color palette.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Update the plot
+ggplot(mtcars, aes(x = wt, y = mpg, color = fcyl_fam, size = disp)) +
+  geom_point() +
+  scale_color_brewer(palette = "Paired") +
+  # Grid facet on gear and vs
+  facet_grid(rows = vars(gear), cols = vars(vs))
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_11.png" width="400" /></p>
+
+<h3 id="formula-notation">Formula notation</h3>
+
+<p>As well as the <code class="language-plaintext highlighter-rouge">vars()</code> notation for specifying which variables should be used to split the dataset into facets, there is also a traditional formula notation. The three cases are shown in the table.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Modern notation</th>
+      <th style="text-align: left">Formula notation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">facet_grid(rows = vars(A))</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">facet_grid(A ~ .)</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">facet_grid(cols = vars(B))</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">facet_grid(. ~ B)</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">facet_grid(rows = vars(A), cols = vars(B))</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">facet_grid(A ~ B)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">mpg_by_wt</code> is available again. Rework the previous plots, this time using formula notation.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(wt, mpg)) + 
+  geom_point() +
+  # Facet rows by am using formula notation
+facet_grid(am ~ .)
+</code></pre></div></div>
+
+<p>Lo anterior es igual a <code class="language-plaintext highlighter-rouge">rows = vars(am)</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(wt, mpg)) + 
+  geom_point() +
+  # Facet columns by cyl using formula notation
+  facet_grid(. ~ cyl )
+</code></pre></div></div>
+
+<h2 id="facet-labels-and-order">Facet labels and order</h2>
+
+<h3 id="labeling-facets">Labeling facets</h3>
+
+<p>If your factor levels are not clear, your facet labels may be confusing. You can assign proper labels in your original data <em>before</em> plotting (see next exercise), or you can use the <code class="language-plaintext highlighter-rouge">labeller</code> argument in the facet layer.</p>
+
+<p>The default value is</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">label_value</code>: Default, displays only the value</li>
+</ul>
+
+<p>Common alternatives are:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">label_both</code>: Displays both the value and the variable name</li>
+  <li><code class="language-plaintext highlighter-rouge">label_context</code>: Displays only the values or both the values and variables depending on whether multiple factors are faceted</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Plot wt by mpg
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  # Label context
+  facet_grid(cols = vars(cyl), labeller = label_context)
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_12.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Plot wt by mpg
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  # Two variables
+  facet_grid(cols = vars(vs, cyl), labeller = label_context)
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_13.png" width="400" /></p>
+
+<h3 id="setting-order">Setting order</h3>
+
+<p>If you want to change the order of your facets, it’s best to properly define your factor variables <em>before</em> plotting.</p>
+
+<p>Let’s see this in action with the <code class="language-plaintext highlighter-rouge">mtcars</code> transmission variable <code class="language-plaintext highlighter-rouge">am</code>. In this case, <code class="language-plaintext highlighter-rouge">0</code> = “automatic” and <code class="language-plaintext highlighter-rouge">1</code> = “manual”.</p>
+
+<p>Here, we’ll make <code class="language-plaintext highlighter-rouge">am</code> a factor variable and relabel the numbers to proper names. The default order is alphabetical. To rearrange them we’ll call <code class="language-plaintext highlighter-rouge">fct_rev()</code> from the <code class="language-plaintext highlighter-rouge">forcats</code> package to reverse the order.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make factor, set proper labels explictly
+mtcars$fam &lt;- factor(mtcars$am, labels = c(`0` = "automatic",
+                                           `1` = "manual"))
+
+# Default order is alphabetical
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  facet_grid(cols = vars(fam))
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_14.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make factor, set proper labels explictly, and
+# manually set the label order
+mtcars$fam &lt;- factor(mtcars$am,
+                     levels = c(1, 0),
+                     labels = c("manual", "automatic"))
+
+# View again
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  facet_grid(cols = vars(fam))
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_16.png" width="400" /></p>
+
+<h2 id="facet-plotting-spaces">Facet plotting spaces</h2>
+
+<h3 id="variable-plotting-spaces-i-continuous-variables">Variable plotting spaces I: continuous variables</h3>
+
+<p>By default every facet of a plot has the same axes. If the data ranges vary wildly between facets, it can be clearer if each facet has its own scale. This is achieved with the <code class="language-plaintext highlighter-rouge">scales</code> argument to <code class="language-plaintext highlighter-rouge">facet_grid()</code>.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">"fixed"</code> (default): axes are shared between facets.</li>
+  <li><code class="language-plaintext highlighter-rouge">free</code>: each facet has its own axes.</li>
+  <li><code class="language-plaintext highlighter-rouge">free_x</code>: each facet has its own x-axis, but the y-axis is shared.</li>
+  <li><code class="language-plaintext highlighter-rouge">free_y</code>: each facet has its own y-axis, but the x-axis is shared.</li>
+</ul>
+
+<p>When faceting by columns, <code class="language-plaintext highlighter-rouge">"free_y"</code> has no effect, but we can adjust the x-axis. In contrast, when faceting by rows, <code class="language-plaintext highlighter-rouge">"free_x"</code> has no effect, but we can adjust the y-axis.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() + 
+  # Update the faceting to free the x-axis scales
+  facet_grid(cols = vars(cyl), scales = "free")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() + 
+  # Swap cols for rows; free the y-axis scales
+  facet_grid(rows = vars(cyl), scales = "free_y")
+</code></pre></div></div>
+
+<h3 id="variable-plotting-spaces-ii-categorical-variables">Variable plotting spaces II: categorical variables</h3>
+
+<p>When you have a categorical variable with many levels which are not all present in each sub-group of another variable, it’s usually desirable to drop the unused levels.</p>
+
+<p>By default, each facet of a plot is the same size. This behavior can be changed with the <code class="language-plaintext highlighter-rouge">spaces</code> argument, which works in the same way as <code class="language-plaintext highlighter-rouge">scales</code>: <code class="language-plaintext highlighter-rouge">"free_x"</code> allows different sized facets on the x-axis, <code class="language-plaintext highlighter-rouge">"free_y"</code>, allows different sized facets on the y-axis, <code class="language-plaintext highlighter-rouge">"free"</code> allows different sizes in both directions.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(x = mpg, y = car, color = fam)) +
+  geom_point() +
+  # Facet rows by gear
+  facet_grid(rows = vars(gear))
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_17.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(x = mpg, y = car, color = fam)) +
+  geom_point() +
+  # Free the y scales and space
+  facet_grid(rows = vars(gear), scales = "free_y", space = "free_y")
+</code></pre></div></div>
+
+<h2 id="facet-wrap--margins">Facet wrap &amp; margins</h2>
+
+<h3 id="wrapping-for-many-levels">Wrapping for many levels</h3>
+
+<p><code class="language-plaintext highlighter-rouge">facet_grid()</code> is fantastic for categorical variables with a small number of levels. Although it is possible to facet variables with many levels, the resulting plot will be very wide or very tall, which can make it difficult to view.</p>
+
+<p>The solution is to use <code class="language-plaintext highlighter-rouge">facet_wrap()</code> which separates levels along one axis but wraps all the subsets across a given number of rows or columns.</p>
+
+<p>For this plot, we’ll use the <code class="language-plaintext highlighter-rouge">Vocab</code> dataset that we’ve already seen. The base layer is provided.</p>
+
+<p>Since we have many <code class="language-plaintext highlighter-rouge">years</code>, it doesn’t make sense to use <code class="language-plaintext highlighter-rouge">facet_grid()</code>, so let’s try <code class="language-plaintext highlighter-rouge">facet_wrap()</code> instead.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(Vocab, aes(x = education, y = vocabulary)) +
+  stat_smooth(method = "lm", se = FALSE) +
+  # Create facets, wrapping by year, using vars()
+  facet_wrap(vars(year))
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_18.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(Vocab, aes(x = education, y = vocabulary)) +
+  stat_smooth(method = "lm", se = FALSE) +
+  # Create facets, wrapping by year, using a formula
+  facet_wrap(~ year)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(Vocab, aes(x = education, y = vocabulary)) +
+  stat_smooth(method = "lm", se = FALSE) +
+  # Update the facet layout, using 11 columns
+  facet_wrap(~ year, ncol = 11)
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_19.png" width="400" /></p>
+
+<h3 id="margin-plots">Margin plots</h3>
+
+<p>Facets are great for seeing subsets in a variable, but sometimes you want to see <em>both</em> those subsets <em>and</em> all values in a variable.</p>
+
+<p>Here, the <code class="language-plaintext highlighter-rouge">margins</code> argument to <code class="language-plaintext highlighter-rouge">facet_grid()</code> is your friend.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">FALSE</code> (default): no margins.</li>
+  <li><code class="language-plaintext highlighter-rouge">TRUE</code>: add margins to every variable being faceted by.</li>
+  <li><code class="language-plaintext highlighter-rouge">c("variable1", "variable2")</code>: only add margins to the variables listed.</li>
+</ul>
+
+<p>To make it easier to follow the facets, we’ve created two factor variables with proper labels — <code class="language-plaintext highlighter-rouge">fam</code> for the transmission type, and <code class="language-plaintext highlighter-rouge">fvs</code> for the engine type, respectively.</p>
+
+<p><em>Zoom the graphics window to better view your plots.</em></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(x = wt, y = mpg)) + 
+  geom_point() +
+  # Facet rows by fvs and fam, and cols by gear
+  facet_grid(rows = vars(fvs, fam), cols = vars(gear))
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_20.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars, aes(x = wt, y = mpg)) + 
+  geom_point() +
+  # Update the facets to only show margins on gear and fvs
+  facet_grid(rows = vars(fvs, fam), cols = vars(gear), margins = "fam")
+</code></pre></div></div>
+
+<h2 id="best-practices-bar-plots">Best practices: bar plots</h2>
+
+<h3 id="bar-plots-dynamite-plots">Bar plots: dynamite plots</h3>
+
+<p>In the video we saw many reasons why “dynamite plots” (bar plots with error bars) are <em>not</em> well suited for their intended purpose of depicting distributions. If you <em>really</em> want error bars on bar plots, you can of course get them, but you’ll need to set the positions manually. A point geom will typically serve you much better.</p>
+
+<p>Nonetheless, you should know how to handle these kinds of plots, so let’s give it a try.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Plot wt vs. fcyl
+ggplot(mtcars, aes(x = fcyl, y = wt)) +
+  # Add a bar summary stat of means, colored skyblue
+  stat_summary(fun = mean, geom = "bar", fill = "skyblue") +
+  # Add an errorbar summary stat std deviation limits
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), geom = "errorbar", width = 0.1)
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_21.png" width="400" /></p>
+
+<p>fun = fun.y</p>
+
+<h3 id="bar-plots-position-dodging">Bar plots: position dodging</h3>
+
+<p>In the previous exercise we used the <code class="language-plaintext highlighter-rouge">mtcars</code> dataset to draw a dynamite plot about the weight of the cars per cylinder type.</p>
+
+<p>In this exercise we will add a distinction between transmission type, <code class="language-plaintext highlighter-rouge">fam</code>, for the dynamite plots and explore position dodging (where bars are side-by-side).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> # Update the aesthetics to color and fill by fam
+ggplot(mtcars, aes(x = fcyl, y = wt)) +
+  stat_summary(aes(color = fam, fill = fam),fun.y = mean, geom = "bar") +
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), geom = "errorbar", width = 0.1)
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_22.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Set alpha for the first and set position for each stat summary function
+ggplot(mtcars, aes(x = fcyl, y = wt, color = fam, fill = fam)) +
+  stat_summary(fun.y = mean, geom = "bar", alpha = 0.5, position = "dodge") +
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), geom = "errorbar", position = "dodge", width = 0.1)
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_23.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define a dodge position object with width 0.9
+posn_d &lt;- position_dodge(width = 0.9)
+
+# For each summary stat, update the position to posn_d
+ggplot(mtcars, aes(x = fcyl, y = wt, color = fam, fill = fam)) +
+  stat_summary(fun.y = mean, geom = "bar", position = posn_d, alpha = 0.5) +
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), width = 0.1, position = posn_d, geom = "errorbar")
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_24.png" width="400" /></p>
+
+<h3 id="bar-plots-using-aggregated-data">Bar plots: Using aggregated data</h3>
+
+<p>If it <em>is</em> appropriate to use bar plots (see the video!), then it nice to give an impression of the number of values in each group.</p>
+
+<p><code class="language-plaintext highlighter-rouge">stat_summary()</code> doesn’t keep track of the count. <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_count"><code class="language-plaintext highlighter-rouge">stat_sum()</code></a> does (that’s the whole point), but it’s difficult to access. It’s more straightforward to calculate exactly what we want to plot ourselves.</p>
+
+<p>Here, we’ve created a summary data frame called <code class="language-plaintext highlighter-rouge">mtcars_by_cyl</code> which contains the average (<code class="language-plaintext highlighter-rouge">mean_wt</code>), standard deviations (<code class="language-plaintext highlighter-rouge">sd_wt</code>) and count (<code class="language-plaintext highlighter-rouge">n_wt</code>) of car weights, for each cylinder group, <code class="language-plaintext highlighter-rouge">cyl</code>. It also contains the proportion (<code class="language-plaintext highlighter-rouge">prop</code>) of each cylinder represented in the entire dataset. Use the console to familiarize yourself with the <code class="language-plaintext highlighter-rouge">mtcars_by_cyl</code> data frame.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Using mtcars_cyl, plot mean_wt vs. cyl
+ggplot(mtcars_by_cyl, aes(cyl, mean_wt)) +
+  # Add a bar layer with identity stat, filled skyblue
+  geom_bar(stat = "identity", fill = "skyblue")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars_by_cyl, aes(x = cyl, y = mean_wt)) +
+  # Set the width aesthetic to prop
+  geom_col(fill = "skyblue")
+</code></pre></div></div>
+
+<p>Los anteriores dan el Mismo grafico</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggplot(mtcars_by_cyl, aes(x = cyl, y = mean_wt)) +
+  geom_col(aes(width = prop), fill = "skyblue") +
+  # Add an errorbar layer
+  geom_errorbar(
+    # ... at mean weight plus or minus 1 std dev
+    aes(ymin = mean_wt - sd_wt, ymax = mean_wt + sd_wt),
+    # with width 0.1
+    width = 0.1
+  )
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_26.png" width="400" /></p>
+
+<h2 id="heatmaps-use-case-scenario">Heatmaps use case scenario</h2>
+
+<h3 id="heat-maps">Heat maps</h3>
+
+<p>Since heat maps encode <em>color</em> on a continuous scale, they are difficult to accurately <em>decode</em>, a topic we discussed in the first course. Hence, heat maps are most useful if you have a small number of boxes and/or a clear pattern that allows you to overcome decoding difficulties.</p>
+
+<p>To produce them, map two categorical variables onto the <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> aesthetics, along with a continuous variable onto <code class="language-plaintext highlighter-rouge">fill</code>. The <a href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_tile"><code class="language-plaintext highlighter-rouge">geom_tile()</code></a> layer adds the boxes.</p>
+
+<p>We’ll produce the heat map we saw in the video (in the viewer) with the built-in <code class="language-plaintext highlighter-rouge">barley</code> dataset. The <code class="language-plaintext highlighter-rouge">barley</code> dataset is in the <code class="language-plaintext highlighter-rouge">lattice</code> package and has already been loaded for you. Use <a href="http://www.rdocumentation.org/packages/utils/functions/str"><code class="language-plaintext highlighter-rouge">str()</code></a> to explore the structure.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Using barley, plot variety vs. year, filled by yield
+ggplot(barley, aes(year, variety, fill = yield)) +
+  # Add a tile geom
+  geom_tile()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Previously defined
+ggplot(barley, aes(x = year, y = variety, fill = yield)) +
+  geom_tile() + 
+  # Facet, wrapping by site, with 1 column
+  facet_wrap(facets = vars(site), ncol = 1) +
+  # Add a fill scale using an 2-color gradient
+  scale_fill_gradient(low = "white", high = "red")
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_27.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># A palette of 9 reds
+red_brewer_palette &lt;- brewer.pal(9, "Reds")
+
+# Update the plot
+ggplot(barley, aes(x = year, y = variety, fill = yield)) +
+  geom_tile() + 
+  facet_wrap(facets = vars(site), ncol = 1) +
+  # Update scale to use n-colors from red_brewer_palette
+  scale_fill_gradientn(colors = red_brewer_palette)
+</code></pre></div></div>
+
+<h3 id="heat-map-alternatives">Heat map alternatives</h3>
+
+<p>There are several alternatives to heat maps. The best choice really depends on the data and the story you want to tell with this data. If there is a time component, the most obvious choice is a line plot.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Using barley, plot yield vs. year, colored and grouped by variety
+ggplot(barley, aes(year, yield, color = variety, group = variety)) +
+  # Add a line layer
+  geom_line() +
+  # Facet, wrapping by site, with 1 row
+  facet_wrap( ~ site, nrow = 1)
+</code></pre></div></div>
+
+<p><img src="C:\Users\Nicol Huaraca\Desktop\Hubble\DataCamp\Ggplot2 inter\graph_28.png" width="400" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Using barely, plot yield vs. year, colored, grouped, and filled by site
+ggplot(barley, aes(x = year, y = yield, color = site, group = site, fill = site)) +
+  # Add a line summary stat aggregated by mean
+  stat_summary(fun.y = mean, geom = "line") +
+  # Add a ribbon summary stat with 10% opacity, no color
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), geom = "ribbon", alpha = 0.1, color = NA)
+</code></pre></div></div>
+
+<h2 id="when-good-data-makes-bad-plots">When good data makes bad plots</h2>
+
+<h3 id="color-blindness">Color blindness</h3>
+
+<p>Red-Green color blindness is surprisingly prevalent, which means that part of your audience will not be able to ready your plot if you are relying on color aesthetics.</p>
+
+<p>Why would it be appropriate to use red and green in a plot?</p>
+
+<h3 id="typical-problems">Typical problems</h3>
+
+<p>When you first encounter a data visualization, either from yourself or a colleague, you always want to critically ask if it’s obscuring the data in any way.</p>
+
+<p>Let’s take a look at the steps we could take to produce and improve the plot in the view.</p>
+
+<p>The data comes from an experiment where the effect of two different types of vitamin C sources, orange juice or ascorbic acid, were tested on the growth of the odontoblasts (cells responsible for tooth growth) in 60 guinea pigs.</p>
+
+<p>The data is stored in the <code class="language-plaintext highlighter-rouge">TG</code> data frame, which contains three variables: <code class="language-plaintext highlighter-rouge">dose</code>, <code class="language-plaintext highlighter-rouge">len</code>, and <code class="language-plaintext highlighter-rouge">supp</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Change type
+TG$dose &lt;- as.numeric(as.character(TG$dose))
+
+# Plot
+growth_by_dose &lt;- ggplot(TG, aes(dose, len, color = supp)) +
+  stat_summary(fun.data = mean_sdl,
+               fun.args = list(mult = 1),
+               position = position_dodge(0.2)) +
+  stat_summary(fun.y = mean,
+               geom = "line",
+               position = position_dodge(0.1)) +
+  theme_classic() +
+  # Adjust labels and colors:
+  labs(x = "Dose (mg/day)", y = "Odontoblasts length (mean, standard deviation)", color = "Supplement") +
+  scale_color_brewer(palette = "Set1", labels = c("Orange juice", "Ascorbic acid")) +
+  scale_y_continuous(limits = c(0,35), breaks = seq(0, 35, 5), expand = c(0,0))
+
+# View plot
+growth_by_dose
+</code></pre></div></div>
+
+:ET

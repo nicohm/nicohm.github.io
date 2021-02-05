@@ -3,11 +3,63 @@
   <channel>
     <title>Nicol Huaraca</title>
     <description></description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 20 Nov 2020 17:38:41 -0500</pubDate>
-    <lastBuildDate>Fri, 20 Nov 2020 17:38:41 -0500</lastBuildDate>
-    <generator>Jekyll v4.1.1</generator>
+    <link>https://nicohm.github.io/</link>
+    <atom:link href="https://nicohm.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 05 Feb 2021 06:58:16 -0500</pubDate>
+    <lastBuildDate>Fri, 05 Feb 2021 06:58:16 -0500</lastBuildDate>
+    <generator>Jekyll v4.2.0</generator>
+    
+      <item>
+        <title>Añadir Kernels a Jupyter en Windows</title>
+        <description>
+Guía para instalar diferentes kernels en Jupyter Notebook o Jupyter Lab.
+
+Permite usar Julia, R, Octave y Matlab en formato markdown mediante el editor Jupyter.
+</description>
+        <pubDate>Thu, 04 Feb 2021 00:00:00 -0500</pubDate>
+        <link>https://nicohm.github.io/2021/02/04/A%C3%B1adir-Kernels-a-Jupyter/</link>
+        <guid isPermaLink="true">https://nicohm.github.io/2021/02/04/A%C3%B1adir-Kernels-a-Jupyter/</guid>
+        
+        <category>jupyter</category>
+        
+        <category>kernel</category>
+        
+        
+        <category>Python</category>
+        
+      </item>
+    
+      <item>
+        <title>Intermediate Ggplot2</title>
+        <description>
+Guide and exercises for ggplot2. Based in Datacamp.
+</description>
+        <pubDate>Thu, 04 Feb 2021 00:00:00 -0500</pubDate>
+        <link>https://nicohm.github.io/2021/02/04/Intermediate-ggplot2/</link>
+        <guid isPermaLink="true">https://nicohm.github.io/2021/02/04/Intermediate-ggplot2/</guid>
+        
+        <category>ggplot</category>
+        
+        
+        <category>R</category>
+        
+      </item>
+    
+      <item>
+        <title>Basic Ggplot2</title>
+        <description>
+Guide and exercises for ggplot2. Based in Datacamp.
+</description>
+        <pubDate>Thu, 04 Feb 2021 00:00:00 -0500</pubDate>
+        <link>https://nicohm.github.io/2021/02/04/Basic-Ggplot2/</link>
+        <guid isPermaLink="true">https://nicohm.github.io/2021/02/04/Basic-Ggplot2/</guid>
+        
+        <category>ggplot</category>
+        
+        
+        <category>R</category>
+        
+      </item>
     
       <item>
         <title>Julia: Install and first steps</title>
@@ -18,8 +70,8 @@ Se una la terminal para instalar dentro de un direcctorio deseado.
 Además se da tips de como usar Julia con Atom. Y como agregar el Kernel de Julia en Jupyter Notebook.
 </description>
         <pubDate>Fri, 20 Nov 2020 00:00:00 -0500</pubDate>
-        <link>http://localhost:4000/2020/11/20/install-julia/</link>
-        <guid isPermaLink="true">http://localhost:4000/2020/11/20/install-julia/</guid>
+        <link>https://nicohm.github.io/2020/11/20/install-julia/</link>
+        <guid isPermaLink="true">https://nicohm.github.io/2020/11/20/install-julia/</guid>
         
         <category>julia</category>
         

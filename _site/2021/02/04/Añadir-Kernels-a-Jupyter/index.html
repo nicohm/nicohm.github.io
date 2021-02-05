@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Añadir Kernels a Jupyter en Windows</title>
+    <meta name="description" content="Guía para instalar diferentes kernels en Jupyter Notebook o Jupyter Lab.Permite usar Julia, R, Octave y Matlab en formato markdown mediante el editor Jupyter.">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/css/main.css ">
+    <link rel="canonical" href="https://nicohm.github.io/2021/02/04/A%C3%B1adir-Kernels-a-Jupyter/">
+    <link rel="alternate" type="application/rss+xml" title="Nicol Huaraca" href="https://nicohm.github.io/feed.xml ">
+
+
+
+
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">Nicol Huaraca</a>
+        <small></small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/research/">
+                        
+                            <i class="fa fa-play"></i>Research
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/resources/">
+                        
+                            <i class="fa fa-bookmark"></i>Resources
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Añadir Kernels a Jupyter en Windows</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2021-02-04
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>Nicol Huaraca
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#Python" title="Category: Python" rel="category">Python</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#jupyter" title="Tag: jupyter" rel="tag">jupyter</a-->
+        <a href="/tag/#jupyter" title="Tag: jupyter" rel="tag">jupyter</a>&nbsp;
+    
+        <!--a href="/tag/#kernel" title="Tag: kernel" rel="tag">kernel</a-->
+        <a href="/tag/#kernel" title="Tag: kernel" rel="tag">kernel</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#r" id="markdown-toc-r">R</a></li>
+  <li><a href="#julia" id="markdown-toc-julia">Julia</a></li>
+  <li><a href="#octave" id="markdown-toc-octave">Octave</a></li>
+  <li><a href="#manejando-kernels" id="markdown-toc-manejando-kernels">Manejando kernels</a></li>
+</ul>
+
+<p>Guía para instalar diferentes kernels en Jupyter Notebook o Jupyter Lab.</p>
+
+<p>Permite usar Julia, R, Octave y Matlab en formato markdown mediante el editor Jupyter.</p>
+
+<h2 id="r">R</h2>
+
+<ul>
+  <li>Instalar R</li>
+</ul>
+
+<p>Descargar R del siguiente link <a href="https://cloud.r-project.org/">The Comprehensive R Archive Network (r-project.org)</a></p>
+
+<ul>
+  <li>Instalar los paquetes necesarios</li>
+</ul>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="err">‘</span><span class="n">devtools</span><span class="err">’</span><span class="p">)</span><span class="w">
+</span><span class="n">devtools</span><span class="o">::</span><span class="n">install_github</span><span class="p">(</span><span class="err">‘</span><span class="n">IRkernel</span><span class="o">/</span><span class="n">IRkernel</span><span class="err">’</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<ul>
+  <li>Activar kernel para jupyter desde R (ojo que estamos usando python no conda)</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IRkernel::installspec()
+</code></pre></div></div>
+
+<p>Existe una forma de permitir que el kernel de R esté disponible para todos los usuarios: <code class="language-plaintext highlighter-rouge">IRkernel::installspec(user = FALSE)</code>, sin embargo en esta modalidad necesitas tener permiso de super usuario o administrador (abrir el Command Promt como administrador).</p>
+
+<p><strong>Nota:</strong> Si desea instalar una versión de kernel diferente al 4.0.3, usar el siguiente comando:</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Para R 3.6</span><span class="w">
+</span><span class="n">IRkernel</span><span class="o">::</span><span class="n">installspec</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">‘</span><span class="n">ir33</span><span class="err">’</span><span class="p">,</span><span class="w"> </span><span class="n">displayname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">‘</span><span class="n">R</span><span class="w"> </span><span class="m">3.6</span><span class="err">’</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Para R 3.2</span><span class="w">
+</span><span class="n">IRkernel</span><span class="o">::</span><span class="n">installspec</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">‘</span><span class="n">ir32</span><span class="err">’</span><span class="p">,</span><span class="w"> </span><span class="n">displayname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">‘</span><span class="n">R</span><span class="w"> </span><span class="m">3.2</span><span class="err">’</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="julia">Julia</h2>
+
+<ul>
+  <li>
+    <p>Instalar Julia</p>
+
+    <p>Descargar Julia de <a href="https://julialang.org/downloads/">Download Julia (julialang.org)</a> para 64 bits o 32 bits dependiendo de su sistema. Para comprobar su instalación abrir Julia</p>
+  </li>
+</ul>
+
+<p><img src="/assets/images/julia.PNG" style="zoom:50%;" /></p>
+
+<ul>
+  <li>Instalar kernel desde Julia</li>
+</ul>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="n">Pkg</span>
+<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="x">(</span><span class="s">"IJulia"</span><span class="x">)</span>
+</code></pre></div></div>
+
+<h2 id="octave">Octave</h2>
+
+<ul>
+  <li>
+    <p>Instalar Octave</p>
+
+    <p>Descargar el archivo <code class="language-plaintext highlighter-rouge">.exe</code> de Octave del siguiente link: <a href="https://www.gnu.org/software/octave/download.html#ms-windows">Download (gnu.org)</a> para 64 0 32 bits. e instalar.</p>
+
+    <p><strong>Nota:</strong> Si lo que se quiere es Octave para poder usar <code class="language-plaintext highlighter-rouge">Dynare</code>, la versión que se debe descargar es Octave 5.2.0</p>
+  </li>
+  <li>
+    <p>Agregar el Kernel de Octave</p>
+
+    <p>Primero se debe agregar <code class="language-plaintext highlighter-rouge">octave-cli</code> al path. Por lo que se debe agregar la siguiente dirección (<code class="language-plaintext highlighter-rouge">"C:\Octave\Octave-5.2.0.0\mingw64\bin"</code>) a las variables de entorno virtual. Para ello buscar <code class="language-plaintext highlighter-rouge">environment variables</code> en el buscador y abrir:</p>
+  </li>
+</ul>
+
+<p><img src="/assets/images/env1.png" align="center" style="zoom:50%;" /></p>
+
+<p><img src="/assets/images/env2.PNG" align="center" style="zoom:40%;" /></p>
+
+<p>Seleccionar Editar y luego Nuevo y agregar la ruta mencionada. Por último desde instalamos el  kernel de Octave desde python:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pip</span> <span class="n">install</span> <span class="n">octave_kernel</span>
+</code></pre></div></div>
+
+<h2 id="manejando-kernels">Manejando kernels</h2>
+
+<ul>
+  <li>Obtener lista de kernels</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">jupyter</span> <span class="n">kernelspec</span> <span class="nb">list</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Remover algún kernel</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">jupyter</span> <span class="n">kernelspec</span> <span class="n">uninstall</span> <span class="n">julia</span><span class="o">-</span><span class="mf">3.2</span>
+</code></pre></div></div>
+
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>Hello</strong> <a href="/2021/02/04/Intermediate-ggplot2/">Intermediate Ggplot2</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+<div id="disqus_thread"></div>
+<script>
+    /**
+     * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+
+    var disqus_config = function() {
+        this.page.url = 'https://nicohm.github.io/2021/02/04/A%C3%B1adir-Kernels-a-Jupyter/'; // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'https://nicohm.github.io/2021/02/04/A%C3%B1adir-Kernels-a-Jupyter/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document,
+            s = d.createElement('script');
+
+        s.src = '//nicohm.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+             Nicol Huaraca！ 
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/nicohm" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:nicol.huaraca@yahoo.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>     
+            <a href="https://www.facebook.com/nicolbryan.huaracameza" title="Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>   
+            <a href="https://www.linkedin.com/in/nicolhuaraca" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+        </p>
+        <p>
+            
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /js/main.js " charset="utf-8"></script>
+    <script src=" /js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>
